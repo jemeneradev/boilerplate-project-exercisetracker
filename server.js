@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const moment = require("moment")
 
 const cors = require('cors')
 
@@ -43,6 +44,16 @@ const checkdate = (submitted_date)=>{
       }
 }
 
+const formatDate = (submitteddate=null) => {
+  if (submitteddate===null) {  
+   let parts = new Date(Date.now()).toString().split(' ') 
+   return `${parts[0]} ${parts[1]} ${parts[2]} ${parts[3]}`
+  }
+  else {
+    return moment(submitteddate).format("llll").replace(/,/g,'').split(' ').slice(0,4).join(" ")
+  }
+}
+
 var exerciseSchema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
@@ -67,8 +78,7 @@ var exerciseSchema = new Schema({
   date:{
     type: Date,
     get:(v)=>{
-      console.log("stored date", v)
-      return `${v.getFullYear()}-${twodigit(v.getMonth()+1)}-${twodigit(v.getDate())}`
+      return formatDate(v) 
     }
   }
 })
