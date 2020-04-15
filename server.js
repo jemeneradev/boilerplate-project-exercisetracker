@@ -26,12 +26,21 @@ var userSchema = new Schema({
 var User = db.model('User', userSchema);
 
 const convertToDate = (formatted) =>{
-  let extract_date = formatted.split("/")
+  let extract_date = formatted.split("-")
   let dateToSave = new Date(parseInt(extract_date[0]),parseInt(extract_date[1])-1,parseInt(extract_date[2]))
   return dateToSave;
 }
 const twodigit=(num)=>{
   return (num>9) ? num : `0${num}`
+}
+const checkdate = (submitted_date)=>{
+      if(/\d{4}[-]\d{2}[-]\d{2}/gi.test(submitted_date)===false){//if empty or if date is given wrong
+        let d = new Date() 
+        return d;
+      }
+      else {
+        return convertToDate(submitted_date); 
+      }
 }
 
 var exerciseSchema = new Schema({
@@ -59,16 +68,7 @@ var exerciseSchema = new Schema({
     type: Date,
     get:(v)=>{
       console.log("stored date", v)
-      return `${v.getFullYear()}-${twodigit(v.getMonth())}-${twodigit(v.getDay())}`
-    },
-    set:(v)=>{
-      if(/\d{4}[-]\d{2}[-]\d{2}/gi.test(v)===false){//if empty or if date is given wrong
-        let d = new Date() 
-        return d;
-      }
-      else {
-        return convertToDate(v); 
-      }
+      return `${v.getFullYear()}-${twodigit(v.getMonth()+1)}-${twodigit(v.getDate())}`
     }
   }
 })
@@ -129,7 +129,7 @@ app.post('/api/exercise/add',(req,res)=>{
           userId:req.body.userId,
           description:req.body.description,
           duration:req.body.duration,
-          date: req.body.date},(exerciseError,exercise)=>{
+          date: checkdate(req.body.date)},(exerciseError,exercise)=>{
           if(exerciseError){
             console.log(exerciseError)
             res.json({error:"exercise info incorrect "})
