@@ -59,10 +59,10 @@ var exerciseSchema = new Schema({
     type: Date,
     get:(v)=>{
       console.log("stored date", v)
-      return `${v.getFullYear()}/${twodigit(v.getMonth())}/${twodigit(v.getDay())}`
+      return `${v.getFullYear()}-${twodigit(v.getMonth())}-${twodigit(v.getDay())}`
     },
     set:(v)=>{
-      if(/\d{4}[/]\d{2}[/]\d{2}/gi.test(v)===false){//if empty or if date is given wrong
+      if(/\d{4}[-]\d{2}[-]\d{2}/gi.test(v)===false){//if empty or if date is given wrong
         let d = new Date() 
         return d;
       }
