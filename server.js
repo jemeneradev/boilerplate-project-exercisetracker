@@ -47,10 +47,12 @@ const checkdate = (submitted_date)=>{
 const formatDate = (submitteddate=null) => {
   if (submitteddate===null) {  
    let parts = new Date(Date.now()).toString().split(' ') 
-   return `${parts[0]} ${parts[1]} ${parts[2]} ${parts[3]}`
+   return `${parts[0]} ${parts[1]} ${twodigit(parts[2])} ${parts[3]}`
   }
   else {
-    return moment(submitteddate).format("llll").replace(/,/g,'').split(' ').slice(0,4).join(" ")
+    let date = moment(submitteddate).format("llll").replace(/,/g,'').split(' ');
+    date[2] = twodigit(parseInt(date[2]))
+    return date.slice(0,4).join(" ")
   }
 }
 
