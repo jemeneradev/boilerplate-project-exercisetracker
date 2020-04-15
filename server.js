@@ -30,6 +30,9 @@ const convertToDate = (formatted) =>{
   let dateToSave = new Date(parseInt(extract_date[0]),parseInt(extract_date[1])-1,parseInt(extract_date[2]))
   return dateToSave;
 }
+const twodigit=(num)=>{
+  return (num>9) ? num : `0${num}`
+}
 
 var exerciseSchema = new Schema({
   userId: {
@@ -56,7 +59,7 @@ var exerciseSchema = new Schema({
     type: Date,
     get:(v)=>{
       console.log("stored date", v)
-      return `${v.getFullYear()}/${v.getMonth()}/${v.getDay()}`
+      return `${v.getFullYear()}/${twodigit(v.getMonth())}/${twodigit(v.getDay())}`
     },
     set:(v)=>{
       if(/\d{4}[/]\d{2}[/]\d{2}/gi.test(v)===false){//if empty or if date is given wrong
