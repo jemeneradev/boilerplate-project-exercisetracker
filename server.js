@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -5,11 +6,8 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 const mongoose = require('mongoose')
-//mongoose.Promise = require('bluebird');
 
-//mongoose.connect(process.env.MONGODB)// || 'mongodb://localhost/exercise-track' )
-
-var db = mongoose.createConnection("", {
+var db = mongoose.createConnection(process.env.MONGODB, {
   useMongoClient: true
 })
 
@@ -26,9 +24,6 @@ var userSchema = new Schema({
 });
 
 var User = db.model('User', userSchema);
-User.ensureIndexes((err)=>{
-  console.log(err)
-})
 
 const convertToDate = (formatted) =>{
   let extract_date = formatted.split("/")
@@ -92,7 +87,7 @@ app.get('/', (req, res) => {
 
 app.post('/api/exercise/new-user',(req,res)=>{
   console.log("attempting to create a user")
-  if(req.body.username === ""){
+  if(req.body.username === undefined || req.body.username === ""){
     res.json({error:"username was not provided"})
   }
   else {
@@ -108,11 +103,11 @@ app.post('/api/exercise/new-user',(req,res)=>{
     });
   }
 })
-/*
+
 app.get('/api/exercise/users',(req,res)=>{
   User.find({},'username _id',function (err, docs) { 
     if(err){
-      res.json({eror:"no users found."})
+      res.json({error:"no users found."})
     }
     else {
       res.json(docs)
@@ -137,13 +132,19 @@ app.post('/api/exercise/add',(req,res)=>{
             res.json({error:"exercise info incorrect "})
           }
           else {
-            res.json(exercise)
+            res.json({
+              _id:userfound._id,
+              username:userfound.username,
+              description:exercise.description,
+              duration:exercise.duration,
+              date:exercise.date
+            })
           }
         })
     }
   });
 })
-
+/*
 const join_logs = (user,results) => {
   let logs = []
   for(var x in results){
