@@ -186,14 +186,18 @@ db.then(function (db) {
     let logsResults = {
       _id: user._id,
       username: user.username,
-      logs: logs,
-      count: logs.length
+      count: logs.length,
+      log: logs
     }
 
     if(rest !== null){
-      console.log("here",rest)
-      if(rest.from!==null)logsResults.from = formatDate(rest.date['$gte'])
-      if(rest.to!==null)logsResults.to = formatDate(rest.date['$lte'])
+      
+
+      if(rest.date!==undefined){
+        console.log("here",rest,rest.date!==null)
+        if(rest.date['$gte']!==undefined)logsResults.from = formatDate(rest.date['$gte'])
+        if(rest.date['$lte']!==undefined)logsResults.to = formatDate(rest.date['$lte'])
+      }
     }
     return logsResults;
   }
